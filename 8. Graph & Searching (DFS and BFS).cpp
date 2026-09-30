@@ -1,33 +1,28 @@
 #include <iostream>
+#include <vector>
 #include <queue>
 using namespace std;
 
-#define MAX 10
-
-int graph[MAX][MAX];
-int visited[MAX];
-int n;
+vector<int> graph[10];
+bool visited[10];
 
 void DFS(int vertex)
 {
     cout << vertex << " ";
-    visited[vertex] = 1;
+    visited[vertex] = true;
 
-    for (int i = 0; i < n; i++)
+    for (int next : graph[vertex])
     {
-        if (graph[vertex][i] == 1 && visited[i] == 0)
-        {
-            DFS(i);
-        }
+        if (!visited[next])
+            DFS(next);
     }
 }
 
 void BFS(int start)
 {
-    int visitedBFS[MAX] = {0};
     queue<int> q;
 
-    visitedBFS[start] = 1;
+    visited[start] = true;
     q.push(start);
 
     while (!q.empty())
@@ -37,12 +32,12 @@ void BFS(int start)
 
         cout << vertex << " ";
 
-        for (int i = 0; i < n; i++)
+        for (int next : graph[vertex])
         {
-            if (graph[vertex][i] == 1 && visitedBFS[i] == 0)
+            if (!visited[next])
             {
-                visitedBFS[i] = 1;
-                q.push(i);
+                visited[next] = true;
+                q.push(next);
             }
         }
     }
@@ -50,31 +45,36 @@ void BFS(int start)
 
 int main()
 {
-    int start;
+    int n, edges, u, v, start;
 
     cout << "Enter number of vertices: ";
     cin >> n;
 
-    cout << "Enter adjacency matrix:\n";
+    cout << "Enter number of edges: ";
+    cin >> edges;
 
-    for (int i = 0; i < n; i++)
+    cout << "Enter edges:\n";
+
+    for (int i = 0; i < edges; i++)
     {
-        for (int j = 0; j < n; j++)
-        {
-            cin >> graph[i][j];
-        }
+        cin >> u >> v;
+        graph[u].push_back(v);
+        graph[v].push_back(u);
     }
 
     cout << "Enter starting vertex: ";
     cin >> start;
 
     for (int i = 0; i < n; i++)
-        visited[i] = 0;
+        visited[i] = false;
 
-    cout << "\nDFS Traversal: ";
+    cout << "DFS: ";
     DFS(start);
 
-    cout << "\nBFS Traversal: ";
+    for (int i = 0; i < n; i++)
+        visited[i] = false;
+
+    cout << "\nBFS: ";
     BFS(start);
 
     return 0;
